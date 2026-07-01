@@ -59,11 +59,10 @@
         display: none !important;
     }
 
-    .navbar {
-        display: none !important;
-    }
-
-    .footer {
+    .navbar,
+    header,
+    footer,
+    .web-footer {
         display: none !important;
     }
 
@@ -376,4 +375,5 @@
 <script>{% include "templates/includes/login/login.js" %}</script>
 {% endblock %}
 
+{% block footer %}{% endblock %}
 {% block sidebar %}{% endblock %}
