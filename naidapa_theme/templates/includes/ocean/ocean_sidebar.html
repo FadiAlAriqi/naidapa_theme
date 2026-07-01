@@ -1,8 +1,11 @@
 <nav class="vertical-sidebar">
     <div class="app-logo">
-        <a class="logo d-inline-block" href="#">
-            <img alt="#" src="{{ frappe.utils.get_url() }}/assets/naidapa_theme/images/logo.png" style="height: auto"
-                width="initial !important">
+        <a class="logo d-inline-block" href="/app" title="{{ app_name }}">
+            {% if app_logo %}
+            <img alt="{{ app_name }}" src="{{ app_logo }}">
+            {% else %}
+            <span class="app-logo-initials">{{ app_name[:2]|upper }}</span>
+            {% endif %}
         </a>
     </div>
 
