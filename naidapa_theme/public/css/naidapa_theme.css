@@ -78,6 +78,8 @@
 
     /* Frappe Native Primary Variables */
     --primary: #0f626a;
+    --danger: #e14e5a;
+    /* ponytail: ki_style sets --danger to bare RGB components; Frappe expects a color */
     --np-bg: #f5fbfb;
     --font-color: #082f32;
     --body-color: #f5fbfb;
@@ -125,12 +127,12 @@ body {
 }
 
 /* --- GLOBAL SYSTEM INPUT TWEAKS (KI-ADMIN BASE INPUT STYLE) --- */
-.form-control:not([type="checkbox"]):not([type="radio"]),
-.input-with-feedback:not([type="checkbox"]):not([type="radio"]),
-.frappe-control input:not([type="checkbox"]):not([type="radio"]),
-.frappe-control select,
+.form-control:not([type="checkbox"]):not([type="radio"]):not(#navbar-search):not(.input-xs),
+.input-with-feedback:not([type="checkbox"]):not([type="radio"]):not(.input-xs),
+.frappe-control input:not([type="checkbox"]):not([type="radio"]):not(.input-xs),
+.frappe-control select:not(.input-xs),
 .frappe-control textarea,
-.awesomplete>input {
+.awesomplete>input:not(#navbar-search):not(.input-xs) {
     background-color: #ffffff !important;
     border: 1px solid #dcdfe3 !important;
     border-radius: 6px !important;
@@ -144,9 +146,9 @@ body {
 }
 
 /* Fix select vertical alignment */
-.frappe-control select,
-select.form-control,
-select.input-with-feedback {
+.frappe-control select:not(.input-xs),
+select.form-control:not(.input-xs),
+select.input-with-feedback:not(.input-xs) {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     height: 40px !important;
@@ -211,6 +213,17 @@ select.input-with-feedback {
     cursor: pointer;
 }
 
+/* Grid / compact inputs: keep Frappe input-xs sizing */
+.form-control.input-xs,
+.frappe-control input.input-xs,
+select.input-xs {
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 3px 7px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+}
+
 /* Prevent layout jumping on Homepage only */
 body.naidapa-theme-active[data-route="Workspaces"] .layout-side-section,
 body.naidapa-theme-active[data-route="Workspaces"] .sidebar-toggle-btn,
@@ -228,6 +241,36 @@ body.naidapa-theme-active .sticky-top .navbar {
     border-bottom: var(--glass-border);
     padding: 12px 24px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Navbar search: global input styles strip icon padding */
+.search-bar {
+    position: relative;
+}
+
+.search-bar .search-icon {
+    position: absolute;
+    left: 12px;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+    display: flex;
+    align-items: center;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.search-bar .awesomplete {
+    width: 100%;
+}
+
+.search-bar .awesomplete > input#navbar-search,
+.search-bar #navbar-search.form-control {
+    width: 100% !important;
+    padding: 8px 14px 8px 36px !important;
+    min-height: 40px !important;
 }
 
 /* Hide Frappe's native application logo in the navbar */
@@ -259,11 +302,26 @@ nav.vertical-sidebar {
     z-index: 1030 !important;
 }
 
+/* Grid row editor: center in content area, not under sidebar */
+body.naidapa-theme-active {
+    --sidebar-width: 14rem;
+    --semi-nav: 4rem;
+    --sidebar-offset: var(--sidebar-width);
+}
+
+body.naidapa-theme-active:has(nav.vertical-sidebar.semi-nav:not(:hover)) {
+    --sidebar-offset: var(--semi-nav, 5rem);
+}
+
+body.naidapa-theme-active #freeze.grid-form {
+    z-index: 1035;
+}
+
 .app-wrapper .app-content {
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0px 0px 0px 286px;
+    padding: 0 0 0 var(--sidebar-width);
     transition: var(--app-transition);
     width: 100%;
     position: relative;
@@ -286,13 +344,54 @@ nav .app-logo {
     align-items: center;
     border-bottom: 1px dashed var(--border_color);
     display: flex;
-    height: 70px;
-    padding: 0 20px;
+    height: 56px;
+    padding: 0 12px;
     white-space: nowrap;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+nav.vertical-sidebar .app-logo .logo {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 0 !important;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+nav.vertical-sidebar .app-logo .logo img {
+    display: block;
+    max-width: 100% !important;
+    width: auto !important;
+    max-height: 36px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    object-position: left center;
+    float: none !important;
+}
+
+nav.vertical-sidebar.semi-nav .app-logo .logo img {
+    max-width: 48px !important;
+    max-height: 40px !important;
+}
+
+nav .app-logo .app-logo-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
 }
 
 nav .app-nav {
-    height: calc(100vh - 70px);
+    height: calc(100vh - 56px);
     overflow-y: auto;
 }
 
@@ -304,23 +403,28 @@ nav .app-nav .main-nav {
 nav .app-nav .menu-title span {
     color: var(--font-light-color);
     display: block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: .5px;
     margin-bottom: 2px;
-    padding-bottom: 10px;
-    padding-top: 20px;
+    padding-bottom: 6px;
+    padding-top: 12px;
     text-transform: uppercase;
 }
 
-nav .app-nav .main-nav>li>a {
+nav .app-nav .main-nav>li {
+    padding: 0 0.5rem;
+}
+
+nav .app-nav .main-nav>li>a,
+nav .app-nav .main-nav>li:not(.menu-title)>a {
     border-radius: 5px;
     color: var(--font-color);
     display: block !important;
-    font-size: 15px;
+    font-size: 13px !important;
     font-weight: 500;
-    margin-bottom: 4px;
-    padding: 10px 14px;
+    margin-bottom: 2px;
+    padding: 7px 10px !important;
     text-transform: capitalize;
     transition: var(--app-transition);
     white-space: nowrap;
@@ -338,8 +442,8 @@ nav .app-nav .main-nav>li.active>a {
 }
 
 nav .app-nav .main-nav>li>a svg {
-    height: 20px;
-    width: 20px;
+    height: 18px;
+    width: 18px;
     stroke-width: 1.5;
     fill: none;
     transition: var(--app-transition);
@@ -373,13 +477,13 @@ nav .app-nav .main-nav>li.active>a iconify-icon {
 
     /* The desktop hide logic is completely removed so the semi-nav class can dictate standard shrinking instead of hiding entirely */
     body.sidebar-menu-opened nav:not(.semi-nav) {
-        margin-left: -286px;
+        margin-left: calc(-1 * var(--sidebar-width));
     }
 }
 
 @media (max-width: 991px) {
     nav {
-        margin-left: -286px;
+        margin-left: calc(-1 * var(--sidebar-width));
     }
 
     .app-wrapper .app-content {
@@ -703,17 +807,17 @@ nav.semi-nav .app-nav .main-nav>li:not(.menu-title)>a::after {
 }
 
 .sidebar-item-icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 span.sidebar-item-label {
-    margin-left: 5px;
+    margin-left: 4px;
 }
 
 .sidebar-item-icon iconify-icon {
-    font-size: 20px;
-    top: 3px;
+    font-size: 18px;
+    top: 2px;
     position: relative;
 }
 
@@ -1039,4 +1143,28 @@ span.sidebar-item-label {
 .page-head .btn {
     height: 32px !important;
     justify-content: center !important;
+}
+
+/* Grid row editor: delete button (ki_style breaks var(--danger) for Frappe) */
+body.naidapa-theme-active .enhanced-grid-container .grid-row-open .form-in-grid .grid-header-toolbar .row-actions .btn.grid-delete-row {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 8px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    color: #fff !important;
+    background-color: #e14e5a !important;
+    border-color: #e14e5a !important;
+}
+
+body.naidapa-theme-active .enhanced-grid-container .grid-row-open .form-in-grid .grid-header-toolbar .row-actions .btn.grid-delete-row .icon {
+    width: 16px !important;
+    height: 16px !important;
+    --icon-stroke: #fff;
+    stroke: #fff;
+}
+
+body.naidapa-theme-active .enhanced-grid-container .grid-row-open .form-in-grid .grid-header-toolbar .row-actions .btn.grid-delete-row .icon use {
+    stroke: #fff !important;
 }
